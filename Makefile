@@ -1,6 +1,26 @@
 COMPOSE ?= docker compose
+
+-include .env
+
 DRAWIO_BASE_URL ?= http://localhost:8080/
+DRAWIO_OUTPUT_DIR ?= ./diagrams
+VIEWER_PATH ?=
 MCP_PORT ?= 3001
+MCP_LISTEN ?= 127.0.0.1
+
+MCP_ENV = DRAWIO_BASE_URL=$(DRAWIO_BASE_URL) DRAWIO_OUTPUT_DIR=$(DRAWIO_OUTPUT_DIR) MCP_PORT=$(MCP_PORT) MCP_LISTEN=$(MCP_LISTEN)
+ifneq ($(strip $(VIEWER_PATH)),)
+MCP_ENV += VIEWER_PATH=$(VIEWER_PATH)
+endif
+ifneq ($(strip $(ALLOWED_HOSTS)),)
+MCP_ENV += ALLOWED_HOSTS=$(ALLOWED_HOSTS)
+endif
+ifneq ($(strip $(DOMAIN)),)
+MCP_ENV += DOMAIN=$(DOMAIN)
+endif
+ifneq ($(strip $(OPEN_BROWSER)),)
+MCP_ENV += OPEN_BROWSER=$(OPEN_BROWSER)
+endif
 
 .PHONY: help install check start up up-detached drawio mcp stdio logs down clean
 
@@ -32,10 +52,10 @@ drawio:
 	$(COMPOSE) up drawio
 
 mcp:
-	DRAWIO_BASE_URL=$(DRAWIO_BASE_URL) MCP_PORT=$(MCP_PORT) npm start
+	$(MCP_ENV) npm start
 
 stdio:
-	DRAWIO_BASE_URL=$(DRAWIO_BASE_URL) npm run start:stdio
+	$(MCP_ENV) npm run start:stdio
 
 logs:
 	$(COMPOSE) logs -f mcp

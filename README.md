@@ -21,6 +21,12 @@ The MCP server inlines vendored draw.io viewer assets from this repository, so d
 make start
 ```
 
+To customize ports or deployment settings, copy the example environment file first:
+
+```bash
+cp .env.example .env
+```
+
 Open draw.io:
 
 ```text
@@ -140,6 +146,8 @@ If you want generated `.drawio` files to appear directly in a local folder durin
 - `save_drawio_xml`: writes native XML to a `.drawio` file. Mermaid and CSV are preview/open-only in v1.
 
 ## Configuration
+
+The Makefile includes `.env` when present, and Docker Compose also reads it for local interpolation. Keep secrets out of `.env.example`; commit only safe defaults there.
 
 | Variable | Default | Purpose |
 |---|---:|---|
