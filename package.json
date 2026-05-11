@@ -1,0 +1,32 @@
+{
+  "name": "drawio-mcp",
+  "version": "0.1.0",
+  "description": "Self-contained draw.io MCP server that runs locally by default and can be deployed remotely",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "drawio-mcp": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "start:stdio": "node src/index.js --stdio",
+    "check": "node --check src/index.js && node --check src/shared.js && node --check src/normalize-diagram-xml.js && node --check postprocessor/postprocess.js"
+  },
+  "keywords": [
+    "drawio",
+    "diagrams",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.1.2",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "express": "^4",
+    "@xmldom/xmldom": "^0.9.8",
+    "pako": "^2.1.0",
+    "zod": "^3.25.0"
+  }
+}

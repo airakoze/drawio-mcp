@@ -1,0 +1,48 @@
+name: drawio-mcp
+
+services:
+  image-export:
+    image: jgraph/export-server
+    expose:
+      - "8000"
+    environment:
+      DRAWIO_BASE_URL: http://localhost:8080
+    volumes:
+      - fonts:/usr/share/fonts/drawio
+
+  drawio:
+    image: jgraph/drawio
+    depends_on:
+      - image-export
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8443:8443"
+    environment:
+      DRAWIO_SELF_CONTAINED: "1"
+      EXPORT_URL: http://image-export:8000/
+      DRAWIO_SERVER_URL: http://localhost:8080/
+      DRAWIO_BASE_URL: http://localhost:8080
+
+  mcp:
+    image: drawio-mcp-mcp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - drawio
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      DRAWIO_BASE_URL: http://localhost:8080/
+      DRAWIO_OUTPUT_DIR: /data/diagrams
+      MCP_PORT: "3001"
+      MCP_LISTEN: 0.0.0.0
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      OPEN_BROWSER: "0"
+      VIEWER_PATH: /app/viewer
+    volumes:
+      - diagrams:/data/diagrams
+
+volumes:
+  fonts:
+  diagrams:
